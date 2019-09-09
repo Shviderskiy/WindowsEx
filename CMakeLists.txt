@@ -16,7 +16,11 @@ if(WINDOWS_EX_GENERATE_GET_ERROR_LABEL_C)
             --output ${CMAKE_CURRENT_BINARY_DIR}/GetErrorLabel.c
             --cache ${CMAKE_CURRENT_BINARY_DIR}/.error_codes.txt
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+        ERROR_VARIABLE CODE_GENERATION_ERROR
     )
+    if(CODE_GENERATION_ERROR)
+        message(FATAL "${CODE_GENERATION_ERROR}")
+    endif()
 
     list(APPEND WINDOWS_EX_SOURCES
         ${CMAKE_CURRENT_BINARY_DIR}/GetErrorLabel.c
@@ -32,10 +36,8 @@ add_library(${PROJECT_NAME}
     STATIC ${WINDOWS_EX_SOURCES}
 )
 
-if(WINDOWS_EX_BUILD_EXAMPLE)
-
-    add_subdirectory(example)
-
+if(WINDOWS_EX_BUILD_EXAMPLES)
+    add_subdirectory(examples)
 endif()
 
 target_include_directories(${PROJECT_NAME}
