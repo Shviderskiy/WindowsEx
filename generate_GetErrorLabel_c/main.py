@@ -37,7 +37,8 @@ def generate_GetErrorLabel_c(
     write("")
     write("LPCSTR WINAPI GetErrorLabelA(DWORD dwErrorCode)")
     write("{")
-    write("    switch (dwErrorCode) {")
+    write("    switch (dwErrorCode)")
+    write("    {")
     for name, _ in error_constants:
         write("")
         write("#ifdef {}".format(name))

@@ -2,7 +2,8 @@
 
 LPSTR WINAPI EscapeCommandLineArgA(LPCSTR szArgument)
 {
-    if (szArgument == NULL) {
+    if (szArgument == NULL)
+    {
         SetLastError(ERROR_INVALID_PARAMETER);
         return NULL;
     }
@@ -11,9 +12,10 @@ LPSTR WINAPI EscapeCommandLineArgA(LPCSTR szArgument)
 
     {
         BOOL bHasSpecialChar = FALSE;
-        while (szArgument[nLength] != '\0') {
-
-            switch (szArgument[nLength]) {
+        while (szArgument[nLength] != '\0')
+        {
+            switch (szArgument[nLength])
+            {
                 case ' ':
                 case '\t':
                 case '\n':
@@ -29,10 +31,11 @@ LPSTR WINAPI EscapeCommandLineArgA(LPCSTR szArgument)
         while (szArgument[nLength] != '\0')
             nLength++;
 
-        if (nLength > 0 && !bHasSpecialChar) {
-
+        if (nLength > 0 && !bHasSpecialChar)
+        {
             LPSTR szResult = (LPSTR)LocalAlloc(LMEM_FIXED, nLength + 1);
-            if (szResult != NULL) {
+            if (szResult != NULL)
+            {
                 /* copy with null-terminated character */
                 CopyMemory(szResult, szArgument, nLength + 1);
             }
@@ -50,25 +53,29 @@ LPSTR WINAPI EscapeCommandLineArgA(LPCSTR szArgument)
     LPSTR pCurrent = szResult;
     *pCurrent++ = '"';
 
-    for (SIZE_T i = 0; i < nLength; i++) {
-
+    for (SIZE_T i = 0; i < nLength; i++)
+    {
         SIZE_T nBackslashes = 0;
-        while (i < nLength && szArgument[i] == '\\') {
+        while (i < nLength && szArgument[i] == '\\')
+        {
             nBackslashes++;
             i++;
         }
 
-        if (i == nLength) {
+        if (i == nLength)
+        {
             for (SIZE_T j = 0; j < 2 * nBackslashes; j++)
                 *pCurrent++ = '\\';
             break;
         }
-        else if (szArgument[i] == '"') {
+        else if (szArgument[i] == '"')
+        {
             for (SIZE_T j = 0; j < 2 * nBackslashes + 1; j++)
                 *pCurrent++ = '\\';
             *pCurrent++ = '"';
         }
-        else {
+        else
+        {
             for (SIZE_T j = 0; j < nBackslashes; j++)
                 *pCurrent++ = '\\';
             *pCurrent++ = szArgument[i];

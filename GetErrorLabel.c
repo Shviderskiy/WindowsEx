@@ -2,8 +2,8 @@
 
 LPCSTR WINAPI GetErrorLabelA(DWORD dwErrorCode)
 {
-    switch (dwErrorCode) {
-
+    switch (dwErrorCode)
+    {
 #ifdef ERROR_SUCCESS
         case ERROR_SUCCESS:
             return "ERROR_SUCCESS";
