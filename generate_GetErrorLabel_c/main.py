@@ -39,8 +39,10 @@ def generate_GetErrorLabel_c(
     write("{")
     write("    switch (dwErrorCode)")
     write("    {")
-    for name, _ in error_constants:
-        write("")
+    for i, x in enumerate(error_constants):
+        if i > 0:
+            write("")
+        name = x[0]
         write("#ifdef {}".format(name))
         write("        case {}:".format(name))
         write("            return \"{}\";".format(name))
@@ -56,7 +58,7 @@ def main():
         print("Retrieving WinApi error constants")
     error_constants = list(
         winapi_errors.unique_cached_error_constants(command_line_args.cache))
-    error_constants.sort(key=lambda x: x[1])  # sort by value
+    error_constants.sort(key=lambda x: x[1])  # sorting by value
     if command_line_args.verbose:
         print("Generating GetErrorLabel.c")
     generate_GetErrorLabel_c(error_constants, command_line_args.output)
