@@ -9,6 +9,8 @@ conan_basic_setup()
 
 add_executable(${PROJECT_NAME}
     main.cpp
+    EscapeCommandLineArgA.cpp
+    GetErrorLabelA.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
