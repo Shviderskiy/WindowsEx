@@ -40,6 +40,12 @@ if(WINDOWS_EX_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
+if(WINDOWS_EX_BUILD_TESTS)
+    add_subdirectory(tests)
+    enable_testing()
+    add_test(WindowsExTests tests/bin/WindowsExTests.exe)
+endif()
+
 target_include_directories(${PROJECT_NAME}
     PRIVATE ${CMAKE_CURRENT_LIST_DIR}
 )
