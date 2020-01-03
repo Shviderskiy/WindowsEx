@@ -36,10 +36,6 @@ add_library(${PROJECT_NAME}
     STATIC ${WINDOWS_EX_SOURCES}
 )
 
-if(WINDOWS_EX_BUILD_EXAMPLES)
-    add_subdirectory(examples)
-endif()
-
 if(WINDOWS_EX_BUILD_TESTS)
     add_subdirectory(tests)
     enable_testing()
