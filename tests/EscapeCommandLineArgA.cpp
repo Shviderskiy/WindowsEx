@@ -3,42 +3,47 @@
 #include <memory>
 #include <string>
 
-#include <boost/test/unit_test.hpp>
+#include <gtest/gtest.h>
 
 #include "WindowsEx.h"
 
-static std::string EscapeCommandLineArgA_wrapper(char const * string_)
+static std::unique_ptr<char[], decltype(&LocalFree)>
+EscapeCommandLineArgCpp(char const * string_) noexcept
 {
-    std::unique_ptr<char[], decltype(&LocalFree)> result(
-                EscapeCommandLineArgA(string_), LocalFree);
-    return result.get() == nullptr ? "" : result.get();
+    return { EscapeCommandLineArgA(string_), LocalFree };
 }
 
-BOOST_AUTO_TEST_SUITE(EscapeCommandLineArgA_test)
-
-BOOST_AUTO_TEST_CASE(empty)
+GTEST_TEST(EscapeCommandLineArgA, Empty)
 {
-    BOOST_CHECK_EQUAL(EscapeCommandLineArgA_wrapper(""), R"("")");
+    auto result = EscapeCommandLineArgCpp("");
+    GTEST_ASSERT_NE(result, nullptr);
+    GTEST_ASSERT_EQ(result.get(), std::string(R"("")"));
 }
 
-BOOST_AUTO_TEST_CASE(space)
+GTEST_TEST(EscapeCommandLineArgA, Space)
 {
-    BOOST_CHECK_EQUAL(EscapeCommandLineArgA_wrapper(" "), R"(" ")");
+    auto result = EscapeCommandLineArgCpp(" ");
+    GTEST_ASSERT_NE(result, nullptr);
+    GTEST_ASSERT_EQ(result.get(), std::string(R"(" ")"));
 }
 
-BOOST_AUTO_TEST_CASE(backslash)
+GTEST_TEST(EscapeCommandLineArgA, Backslash)
 {
-    BOOST_CHECK_EQUAL(EscapeCommandLineArgA_wrapper(R"(\)"), R"(\)");
+    auto result = EscapeCommandLineArgCpp(R"(\)");
+    GTEST_ASSERT_NE(result, nullptr);
+    GTEST_ASSERT_EQ(result.get(), std::string(R"(\)"));
 }
 
-BOOST_AUTO_TEST_CASE(quote)
+GTEST_TEST(EscapeCommandLineArgA, Quote)
 {
-    BOOST_CHECK_EQUAL(EscapeCommandLineArgA_wrapper(R"(")"), R"("\"")");
+    auto result = EscapeCommandLineArgCpp(R"(")");
+    GTEST_ASSERT_NE(result, nullptr);
+    GTEST_ASSERT_EQ(result.get(), std::string(R"("\"")"));
 }
 
-BOOST_AUTO_TEST_CASE(space_and_quotes)
+GTEST_TEST(EscapeCommandLineArgA, SpaceAndQuotes)
 {
-    BOOST_CHECK_EQUAL(EscapeCommandLineArgA_wrapper(R"(" ")"), R"("\" \"")");
+    auto result = EscapeCommandLineArgCpp(R"(" ")");
+    GTEST_ASSERT_NE(result, nullptr);
+    GTEST_ASSERT_EQ(result.get(), std::string(R"("\" \"")"));
 }
-
-BOOST_AUTO_TEST_SUITE_END()

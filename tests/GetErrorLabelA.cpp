@@ -2,32 +2,25 @@
 
 #include <string>
 
-#include <boost/test/unit_test.hpp>
+#include <gtest/gtest.h>
 
 #include "WindowsEx.h"
 
-static std::string GetErrorLabelA_wrapper(DWORD error_code_)
+GTEST_TEST(GetErrorLabelA, ERROR_SUCCESS_)
 {
-    char const * result = GetErrorLabelA(error_code_);
-    return result == nullptr ? "" : result;
+    LPCSTR result = GetErrorLabelA(ERROR_SUCCESS);
+    GTEST_ASSERT_NE(result, nullptr);
+    GTEST_ASSERT_EQ(result, std::string("ERROR_SUCCESS"));
 }
 
-BOOST_AUTO_TEST_SUITE(GetErrorLabelA_test)
-
-BOOST_AUTO_TEST_CASE(ERROR_SUCCESS_)
+GTEST_TEST(GetErrorLabelA, ERROR_INVALID_DLL_)
 {
-    BOOST_CHECK_EQUAL(GetErrorLabelA_wrapper(ERROR_SUCCESS), "ERROR_SUCCESS");
+    LPCSTR result = GetErrorLabelA(ERROR_INVALID_DLL);
+    GTEST_ASSERT_NE(result, nullptr);
+    GTEST_ASSERT_EQ(result, std::string("ERROR_INVALID_DLL"));
 }
 
-BOOST_AUTO_TEST_CASE(ERROR_INVALID_DLL_)
+GTEST_TEST(GetErrorLabelA, 0xDEAFBEEF)
 {
-    BOOST_CHECK_EQUAL(GetErrorLabelA_wrapper(ERROR_INVALID_DLL),
-                      "ERROR_INVALID_DLL");
+    GTEST_ASSERT_EQ(GetErrorLabelA(0xDEAFBEEF), nullptr);
 }
-
-BOOST_AUTO_TEST_CASE(_0xDEAFBEEF)
-{
-    BOOST_CHECK_EQUAL(GetErrorLabelA_wrapper(0xDEAFBEEF), "");
-}
-
-BOOST_AUTO_TEST_SUITE_END()
