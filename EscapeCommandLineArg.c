@@ -1,8 +1,8 @@
 #include "WindowsEx.h"
 
-LPSTR WINAPI EscapeCommandLineArgA(LPCSTR szArgument)
+LPSTR WINAPI EscapeCommandLineArgA(LPCSTR lpArgument)
 {
-    if (szArgument == NULL)
+    if (lpArgument == NULL)
     {
         SetLastError(ERROR_INVALID_PARAMETER);
         return NULL;
@@ -12,9 +12,9 @@ LPSTR WINAPI EscapeCommandLineArgA(LPCSTR szArgument)
 
     {
         BOOL bHasSpecialChar = FALSE;
-        while (szArgument[nLength] != '\0')
+        while (lpArgument[nLength] != '\0')
         {
-            switch (szArgument[nLength])
+            switch (lpArgument[nLength])
             {
                 case ' ':
                 case '\t':
@@ -28,35 +28,35 @@ LPSTR WINAPI EscapeCommandLineArgA(LPCSTR szArgument)
             nLength++;
         }
 
-        while (szArgument[nLength] != '\0')
+        while (lpArgument[nLength] != '\0')
             nLength++;
 
         if (nLength > 0 && !bHasSpecialChar)
         {
-            LPSTR szResult = (LPSTR)LocalAlloc(LMEM_FIXED, nLength + 1);
-            if (szResult != NULL)
+            LPSTR lpResult = (LPSTR)LocalAlloc(LMEM_FIXED, nLength + 1);
+            if (lpResult != NULL)
             {
                 /* copy with null-terminated character */
-                CopyMemory(szResult, szArgument, nLength + 1);
+                CopyMemory(lpResult, lpArgument, nLength + 1);
             }
             /* on fail LastError already set */
-            return szResult;
+            return lpResult;
         }
     }
 
-    /* if szArgument contains only double-quote character
+    /* if lpArgument contains only double-quote character
      * then it's worst case */
-    LPSTR szResult = (LPSTR)LocalAlloc(LMEM_FIXED, 2 * nLength + 3);
-    if (szResult == NULL)
+    LPSTR lpResult = (LPSTR)LocalAlloc(LMEM_FIXED, 2 * nLength + 3);
+    if (lpResult == NULL)
         return NULL; /* LastError already set */
 
-    LPSTR pCurrent = szResult;
-    *pCurrent++ = '"';
+    LPSTR lpCurrent = lpResult;
+    *lpCurrent++ = '"';
 
     for (SIZE_T i = 0; i < nLength; i++)
     {
         SIZE_T nBackslashes = 0;
-        while (i < nLength && szArgument[i] == '\\')
+        while (i < nLength && lpArgument[i] == '\\')
         {
             nBackslashes++;
             i++;
@@ -65,32 +65,32 @@ LPSTR WINAPI EscapeCommandLineArgA(LPCSTR szArgument)
         if (i == nLength)
         {
             for (SIZE_T j = 0; j < 2 * nBackslashes; j++)
-                *pCurrent++ = '\\';
+                *lpCurrent++ = '\\';
             break;
         }
-        else if (szArgument[i] == '"')
+        else if (lpArgument[i] == '"')
         {
             for (SIZE_T j = 0; j < 2 * nBackslashes + 1; j++)
-                *pCurrent++ = '\\';
-            *pCurrent++ = '"';
+                *lpCurrent++ = '\\';
+            *lpCurrent++ = '"';
         }
         else
         {
             for (SIZE_T j = 0; j < nBackslashes; j++)
-                *pCurrent++ = '\\';
-            *pCurrent++ = szArgument[i];
+                *lpCurrent++ = '\\';
+            *lpCurrent++ = lpArgument[i];
         }
     }
 
-    *pCurrent++ = '"';
-    *pCurrent++ = '\0';
+    *lpCurrent++ = '"';
+    *lpCurrent++ = '\0';
 
-    return szResult;
+    return lpResult;
 }
 
-LPWSTR WINAPI EscapeCommandLineArgW(LPCWSTR szArgument)
+LPWSTR WINAPI EscapeCommandLineArgW(LPCWSTR lpArgument)
 {
-    (VOID)szArgument;
+    (VOID)lpArgument;
     SetLastError(ERROR_CALL_NOT_IMPLEMENTED);
     return NULL;
 }

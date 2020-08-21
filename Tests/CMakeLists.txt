@@ -1,25 +1,43 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
 
 project(WindowsExTests)
 
 set(CMAKE_CXX_STANDARD 11)
 
+set(CONAN_SYSTEM_INCLUDES ON) # disable warnings from external libraries
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
 add_executable(${PROJECT_NAME}
-    main.cpp
+    Main.cpp
+    GTest.cpp
+
     EscapeCommandLineArgA.cpp
     GetErrorLabelA.cpp
+
+    TestDirectoryPath.c
+
+    FileTest.cpp
+    ResizeFile.cpp
+    WriteFile.cpp
+    SetFileSparse.cpp
+    GetFileAllocationBlockSize.cpp
+    QueryFileAllocatedRanges.cpp
+    SetFileZeroData.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/..
 )
 
+get_target_property(TARGET_COMPILE_OPTIONS WindowsEx COMPILE_OPTIONS)
+target_compile_options(${PROJECT_NAME}
+    PUBLIC ${TARGET_COMPILE_OPTIONS}
+)
+
 if(MINGW)
     target_link_options(${PROJECT_NAME}
-        PRIVATE -static # static link with clib
+        PRIVATE -static # static link with runtime library
     )
 endif()
 

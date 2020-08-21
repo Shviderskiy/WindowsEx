@@ -9,12 +9,12 @@ extern "C" {
 
 LPCSTR WINAPI GetErrorLabelA(DWORD dwErrorCode);
 
-LPSTR WINAPI EscapeCommandLineArgA(LPCSTR szArgument);
+LPSTR WINAPI EscapeCommandLineArgA(LPCSTR lpArgument);
 
-LPWSTR WINAPI EscapeCommandLineArgW(LPCWSTR szArgument);
+LPWSTR WINAPI EscapeCommandLineArgW(LPCWSTR lpArgument);
 
 #ifdef __cplusplus
-}
+} /* extern "C" */
 #endif /* __cplusplus */
 
 #ifdef UNICODE

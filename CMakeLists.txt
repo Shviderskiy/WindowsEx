@@ -1,9 +1,13 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
 
 project(WindowsEx)
 
+set(CMAKE_CXX_STANDARD 11)
+
 set(WINDOWS_EX_SOURCES
     EscapeCommandLineArg.c
+    FileSystem.c
+    WinApiError.cpp
 )
 
 if(WINDOWS_EX_GENERATE_GET_ERROR_LABEL_C)
@@ -36,28 +40,41 @@ add_library(${PROJECT_NAME}
     STATIC ${WINDOWS_EX_SOURCES}
 )
 
-if(WINDOWS_EX_BUILD_TESTS)
-    add_subdirectory(tests)
-    enable_testing()
-    add_test(WindowsExTests tests/bin/WindowsExTests.exe)
-endif()
-
 target_include_directories(${PROJECT_NAME}
     PRIVATE ${CMAKE_CURRENT_LIST_DIR}
 )
 
 if(MINGW)
-    target_compile_options(${PROJECT_NAME}
-        PRIVATE # enable diagnostic warnings in project
-            -Wall
-            -Wextra
-            -Wpedantic
-            -Wcast-align
-            -Wcast-qual
-            -Wconversion
-            -Wenum-compare
-            -Wfloat-equal
-            -Wredundant-decls
-            -Wsign-conversion
+    set(GCC_C_WARNINGS
+        -Wall
+        -Wextra
+        -Wpedantic
+        -Wcast-align
+        -Wcast-qual
+        -Wconversion
+        -Wenum-compare
+        -Wfloat-equal
+        -Wredundant-decls
+        -Wsign-conversion
     )
+    set(GCC_CXX_WARNINGS
+        ${GCC_C_WARNINGS}
+        -Weffc++
+        -Wctor-dtor-privacy
+        -Wnon-virtual-dtor
+        -Wold-style-cast
+        -Woverloaded-virtual
+        -Wsign-promo
+    )
+    target_compile_options(${PROJECT_NAME}
+        PUBLIC # enable diagnostic warnings in project
+            $<$<COMPILE_LANGUAGE:C>:${GCC_C_WARNINGS}>
+            $<$<COMPILE_LANGUAGE:CXX>:${GCC_CXX_WARNINGS}>
+    )
+endif()
+
+if(WINDOWS_EX_BUILD_TESTS)
+    add_subdirectory(Tests)
+    enable_testing()
+    add_test(WindowsExTests tests/bin/WindowsExTests.exe)
 endif()
